@@ -169,6 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /*
     //currently not in use
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -283,6 +284,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setItems(mLikelyPlaceNames, listener)
                 .show();
     }
+
+    */
 
     @Override
     public void onMapReady(GoogleMap map) {
