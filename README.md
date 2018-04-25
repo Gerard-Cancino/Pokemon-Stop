@@ -1,3 +1,7 @@
 # Pokemon-Stop
 SUNY Old Westbury Project for Android Development
-Place Holder 
+Authors:
+Francis Derenzis
+Nicole Boshas
+Daniel Dabrowski
+Gerard Cancino
