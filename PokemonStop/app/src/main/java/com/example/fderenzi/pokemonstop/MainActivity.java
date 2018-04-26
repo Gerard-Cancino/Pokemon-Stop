@@ -1,6 +1,7 @@
 package com.example.fderenzi.pokemonstop;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
         map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
                 Intent mapIntent = new Intent(getApplicationContext(), MapsActivity.class);
+
+                // Attempt to start an activity that can handle the Intent
                 startActivity(mapIntent);
             }
         });
