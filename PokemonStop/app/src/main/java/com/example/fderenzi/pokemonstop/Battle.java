@@ -12,19 +12,17 @@ public class Battle {
 
     }
 
-    public int Play(){
+    public int play(){
 
         //Players turn
         PlayerdamageToOpponent();
+        OpponentdamageToPlayer();
         if(checkWin() == 1)
         {
             Reset();
             return 1;
         }
-
-        //Opponents turn
-        OpponentdamageToPlayer();
-        if(checkWin() == 2)
+        else if(checkWin() == 2)
         {
             Reset();
             return 2;
@@ -36,8 +34,9 @@ public class Battle {
 
     }
 
-    public void PlayerdamageToOpponent(){
+   public void PlayerdamageToOpponent(){
         int damageofability = player.getAbility().getDamage();
+        int healthO = opponent.getHealth();
         opponent.setHealth(opponent.getHealth()-damageofability);
     }
 

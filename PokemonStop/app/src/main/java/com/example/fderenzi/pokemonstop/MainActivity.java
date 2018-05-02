@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button map;
     private Button history;
+    private Button battle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
         history.setText("Go to History");
         linearLayout.addView(map);
         linearLayout.addView(history);
+        battle = new Button(this);
+        battle.setText("Battle Test");
+        linearLayout.addView(battle);
 
         setContentView(linearLayout);
 
@@ -45,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent historyIntent = new Intent(getApplicationContext(), HistoryActivity.class);
                 startActivity(historyIntent);
+            }
+        });
+        battle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent battleIntent = new Intent(getApplicationContext(), BattleActivity.class);
+                startActivity(battleIntent);
             }
         });
     }

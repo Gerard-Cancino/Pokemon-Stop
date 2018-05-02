@@ -154,9 +154,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), DEFAULT_ZOOM));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
+
                     }
                 });
             }
+
+
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
@@ -322,5 +325,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         updateLocationUI();
+    }
+
+    public class MonPlace{
+
+        public MonPlace(double lat, double lng, Monster mons){
+            super(lat,lng);
+
+        }
     }
 }
