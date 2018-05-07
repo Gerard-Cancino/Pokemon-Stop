@@ -1,10 +1,11 @@
 package com.example.fderenzi.pokemonstop;
 
+import java.util.Random;
+
 public class Battle {
 
     private Monster player;
     private Monster opponent;
-    private int turn = 1;
 
     public Battle(Monster monster1, Monster monster2){
         player = monster1;
@@ -12,11 +13,11 @@ public class Battle {
 
     }
 
-    public int play(){
-
+    public int play(int p){
+        int randomNumber = (int)(Math.random()*4)+1;
         //Players turn
-        PlayerdamageToOpponent();
-        OpponentdamageToPlayer();
+        PlayerdamageToOpponent(p);
+        OpponentdamageToPlayer(randomNumber);
         if(checkWin() == 1)
         {
             Reset();
@@ -31,18 +32,34 @@ public class Battle {
             return 0;
         }
 
-
     }
 
-   public void PlayerdamageToOpponent(){
-        int damageofability = player.getAbility().getDamage();
-        int healthO = opponent.getHealth();
-        opponent.setHealth(opponent.getHealth()-damageofability);
+    public void PlayerdamageToOpponent(int p){
+        int damageofability = 0;
+        if(p == 1) {
+            damageofability = player.getAbility1().getDamage();
+        }else if(p == 2){
+            damageofability = player.getAbility2().getDamage();
+        }else if(p == 3) {
+            damageofability = player.getAbility3().getDamage();
+        }else if(p == 4){
+            damageofability = player.getAbility4().getDamage();
+        }
+        opponent.setHealth(opponent.getHealth() - damageofability);
     }
 
-    public void OpponentdamageToPlayer(){
-        int damageofability2 = opponent.getAbility().getDamage();
-        player.setHealth(player.getHealth()- damageofability2);
+    public void OpponentdamageToPlayer(int p){
+        int damageofability = 0;
+        if(p == 1) {
+            damageofability = player.getAbility1().getDamage();
+        }else if(p == 2){
+            damageofability = player.getAbility2().getDamage();
+        }else if(p == 3) {
+            damageofability = player.getAbility3().getDamage();
+        }else if(p == 4){
+            damageofability = player.getAbility4().getDamage();
+        }
+        player.setHealth(player.getHealth()- damageofability);
     }
 
 

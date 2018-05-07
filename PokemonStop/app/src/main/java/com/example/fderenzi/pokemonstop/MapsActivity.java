@@ -31,6 +31,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -53,9 +56,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mCurrentLocation;
     private Location mCameraPosition;
 
+    private static final Node marker1 = new Node (40.799030, -73.575573);
+
+    private static final Node marker2 = new Node (40.796685, -73.573142);
+    private static final Node marker3 = new Node (40.799409, -73.574252);
+    private ArrayList<Node>markList = new ArrayList<>();
+
+    private ArrayList<Node>closeNodeList;
+    private Node closestNode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        closeNodeList = new ArrayList<> ();
+        markList.add(marker1);
+        markList.add(marker2);
+        markList.add(marker3);
+
+        marker1.getAdjNode().add(marker2);
+        marker1.getAdjNode().add(marker3);
+
+        marker2.getAdjNode().add(marker1);
+        marker2.getAdjNode().add(marker3);
+
+        marker3.getAdjNode().add(marker1);
+        marker3.getAdjNode().add(marker2);
+
         setContentView(R.layout.activity_maps);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -148,7 +174,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                        } else {
+                            updateCloseNode();
+                            if(mLastKnownLocation != null)
+                                if(isInRadiusOfNode())
+                                    System.out.print("Not implemented");
+                        }
+                        else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), DEFAULT_ZOOM));
@@ -174,124 +205,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    //TODO: add places with monster
-    /*
-    //currently not in use
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.option_get_place) {
-            showCurrentPlace();
-        }
-        return true;
+    private void mapAddMarker (GoogleMap map){
+        LatLng grass1 = new LatLng(marker1.getLatitude(), marker1.getLongitude());
+        map.addMarker(new MarkerOptions().position(grass1));
+        LatLng grass2 = new LatLng(marker2.getLatitude(), marker2.getLongitude());
+        map.addMarker(new MarkerOptions().position(grass2));
+        LatLng grass3 = new LatLng(marker3.getLatitude(), marker3.getLongitude());
+        map.addMarker(new MarkerOptions().position(grass3));
     }
 
-    //currently not in use
-    private void showCurrentPlace() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (mLocationPermissionGranted) {
-            // Get the likely places - that is, the businesses and other points of interest that
-            // are the best match for the device's current location.
-            @SuppressWarnings("MissingPermission") final Task<PlaceLikelihoodBufferResponse> placeResult =
-                    mPlaceDetectionClient.getCurrentPlace(null);
-            placeResult.addOnCompleteListener
-                    (new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
-                        @Override
-                        public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
-
-                                // Set the count, handling cases where less than 5 entries are returned.
-                                int count;
-                                if (likelyPlaces.getCount() < M_MAX_ENTRIES) {
-                                    count = likelyPlaces.getCount();
-                                } else {
-                                    count = M_MAX_ENTRIES;
-                                }
-
-                                int i = 0;
-                                mLikelyPlaceNames = new String[count];
-                                mLikelyPlaceAddresses = new String[count];
-                                mLikelyPlaceAttributions = new String[count];
-                                mLikelyPlaceLatLngs = new LatLng[count];
-
-                                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                                    // Build a list of likely places to show the user.
-                                    mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
-                                    mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace()
-                                            .getAddress();
-                                    mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
-                                            .getAttributions();
-                                    mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-
-                                    i++;
-                                    if (i > (count - 1)) {
-                                        break;
-                                    }
-                                }
-
-                                // Release the place likelihood buffer, to avoid memory leaks.
-                                likelyPlaces.release();
-
-                                // Show a dialog offering the user the list of likely places, and add a
-                                // marker at the selected place.
-                                openPlacesDialog();
-
-                            } else {
-                                Log.e(TAG, "Exception: %s", task.getException());
-                            }
-                        }
-                    });
-        } else {
-            // The user has not granted permission.
-            Log.i(TAG, "The user did not grant location permission.");
-
-            // Add a default marker, because the user hasn't selected a place.
-            mMap.addMarker(new MarkerOptions()
-                    .title(getString(R.string.default_info_title))
-                    .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));
-
-            // Prompt the user for permission.
-            getLocationPermission();
-        }
-    }
-    //currently not in use
-    private void openPlacesDialog() {
-        // Ask the user to choose the place where they are now.
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // The "which" argument contains the position of the selected item.
-                LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                String markerSnippet = mLikelyPlaceAddresses[which];
-                if (mLikelyPlaceAttributions[which] != null) {
-                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                }
-
-                // Add a marker for the selected place, with an info window
-                // showing information about that place.
-                mMap.addMarker(new MarkerOptions()
-                        .title(mLikelyPlaceNames[which])
-                        .position(markerLatLng)
-                        .snippet(markerSnippet));
-
-                // Position the map's camera at the location of the marker.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                        DEFAULT_ZOOM));
+    private void findCloseNode (){
+        Iterator<Node> itMark = markList.iterator();
+        while(itMark.hasNext()){
+            Node pointer = itMark.next();
+            if(pointer.calcDistance(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude())<0.0006) {
+                closestNode = pointer;
+                markList = closestNode.getAdjNode();
             }
-        };
-
-        // Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
+        }
     }
 
-    */
+    private boolean isInRadiusOfNode() {
+        if (closestNode.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()) < 0.004)
+            return true;
+        else
+            return false;
+    }
+
+    private void updateCloseNode (){
+        Node current = closestNode;
+        Iterator<Node>itArray = markList.iterator();
+        while (itArray.hasNext()) {
+            double distance = current.calcDistance(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
+            Node temp = itArray.next();
+            double tempDistance = temp.calcDistance(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
+            if(tempDistance<distance)
+                current=temp;
+        }
+        closestNode = current;
+        markList = closestNode.getAdjNode();
+    }
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -324,14 +277,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return infoWindow;
             }
         });
-        updateLocationUI();
+        mapAddMarker(map);
     }
 
-    public class MonPlace{
-
-        public MonPlace(double lat, double lng, Monster mons){
-            super(lat,lng);
-
-        }
-    }
 }

@@ -5,10 +5,12 @@ package com.example.fderenzi.pokemonstop;
 public class Result {
     private String opponentName;
     private String result;
+    private String winningMove;
 
-    public Result(String newOpponent, String newResult) {
+    public Result(String newOpponent, String newResult, String newWinningMove) {
         opponentName = newOpponent;
         result = newResult;
+        winningMove = newWinningMove;
     }
 
     public String getOpponentName(){
@@ -19,12 +21,8 @@ public class Result {
         return result;
     }
 
-    public void setOpponentName(String namePassed){
-        opponentName = namePassed;
-    }
-
-    public void setResult(String resultPassed){
-        result = resultPassed;
+    public String getWinningMove(){
+        return winningMove;
     }
 }
 

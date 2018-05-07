@@ -7,21 +7,57 @@
     tools:context="com.example.fderenzi.pokemonstop.BattleActivity">
 
     <Button
-        android:id="@+id/attack"
-        android:layout_width="187dp"
-        android:layout_height="68dp"
+        android:id="@+id/attack1"
+        android:layout_width="86dp"
+        android:layout_height="49dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Attack"
-        android:onClick="attackPressed"
+        android:onClick="attackPressed1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.044"
+        app:layout_constraintHorizontal_bias="0.028"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.982" />
+
+    <Button
+        android:id="@+id/attack2"
+        android:layout_width="86dp"
+        android:layout_height="49dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:onClick="attackPressed2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/PLayerHP"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/attack1"
+        app:layout_constraintTop_toBottomOf="@+id/attack3"
+        app:layout_constraintVertical_bias="0.191" />
+
+    <Button
+        android:id="@+id/attack3"
+        android:layout_width="86dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="396dp"
+        android:onClick="attackPressed3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/attack4"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/attack4"
+        android:layout_width="86dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="16dp"
+        android:onClick="attackPressed4"
+        app:layout_constraintBottom_toTopOf="@+id/attack1"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/PLayerHP"
