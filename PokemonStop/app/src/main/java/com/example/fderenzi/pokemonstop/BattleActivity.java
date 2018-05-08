@@ -77,7 +77,7 @@ public class BattleActivity extends AppCompatActivity {
         {
             //PLAYER WIN
             try{
-                dbManager.insert(opponent.getName(), "Win", player.getAbility1().getAName());
+                dbManager.insert(opponent.getName(), "Win");
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
@@ -88,7 +88,7 @@ public class BattleActivity extends AppCompatActivity {
         {
             //OPPONENT WIN
             try{
-                dbManager.insert(opponent.getName(), "Loss", opponent.getAbility1().getAName());
+                dbManager.insert(opponent.getName(), "Loss");
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
@@ -137,7 +137,7 @@ public class BattleActivity extends AppCompatActivity {
         {
             //PLAYER WIN
             try{
-                dbManager.insert(opponent.getName(), "Win", player.getAbility2().getAName());
+                dbManager.insert(opponent.getName(), "Win");
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
@@ -148,7 +148,7 @@ public class BattleActivity extends AppCompatActivity {
         {
             //OPPONENT WIN
             try{
-                dbManager.insert(opponent.getName(), "Loss", opponent.getAbility2().getAName());
+                dbManager.insert(opponent.getName(), "Loss");
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
@@ -197,7 +197,7 @@ public class BattleActivity extends AppCompatActivity {
         {
             //PLAYER WIN
             try{
-                dbManager.insert(opponent.getName(), "Win", player.getAbility3().getAName());
+                dbManager.insert(opponent.getName(), "Win");
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
@@ -208,7 +208,7 @@ public class BattleActivity extends AppCompatActivity {
         {
             //OPPONENT WIN
             try{
-                dbManager.insert(opponent.getName(), "Loss", opponent.getAbility3().getAName());
+                dbManager.insert(opponent.getName(), "Loss");
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
@@ -257,7 +257,7 @@ public class BattleActivity extends AppCompatActivity {
         {
             //PLAYER WIN
             try{
-                dbManager.insert(opponent.getName(), "Win", player.getAbility4().getAName());
+                dbManager.insert(opponent.getName(), "Win");
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
@@ -268,7 +268,7 @@ public class BattleActivity extends AppCompatActivity {
         {
             //OPPONENT WIN
             try{
-                dbManager.insert(opponent.getName(), "Loss", opponent.getAbility4().getAName());
+                dbManager.insert(opponent.getName(), "Loss");
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }

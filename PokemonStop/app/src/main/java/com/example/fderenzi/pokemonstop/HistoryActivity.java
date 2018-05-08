@@ -26,7 +26,7 @@ public class HistoryActivity extends AppCompatActivity {
 
             for (Result result : results)
             {
-                finalString += result.getOpponentName() + ": " + result.getResult() + result.getWinningMove() + "\n";
+                finalString += result.getOpponentName() + ": " + result.getResult() + "\n";
             }
             resultDisplay.setText(finalString);
         }

@@ -14,7 +14,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String TABLE_HISTORY="History";
     private static final String OPPONENT = "Opponent_Name";
     private static final String RESULT = "Battle_Result";
-    private static final String MOVE = "Winning_Move";
 
     public DatabaseManager(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -22,9 +21,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase){
-        //String sqlCreateTable= "create table " + TABLE_HISTORY + "( " + OPPONENT + " text, " + RESULT + " test" + MOVE + "test";
-
-        //sqLiteDatabase.execSQL(sqlCreateTable);
+        String sqlCreateTable= "create table " + TABLE_HISTORY + "( " + OPPONENT + " text, " + RESULT + " text)";
+        sqLiteDatabase.execSQL(sqlCreateTable);
     }
 
     @Override
@@ -33,9 +31,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public void insert( String opponentToInsert, String resultToInsert, String moveToInsert ) {
+    public void insert( String opponentToInsert, String resultToInsert ) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String sqlInsert = "insert into " + TABLE_HISTORY + " values('" + opponentToInsert + "' ,'" + resultToInsert + "' ,'" + moveToInsert +"' )";
+        String sqlInsert = "insert into " + TABLE_HISTORY + " values('" + opponentToInsert + "' ,'" + resultToInsert +"' )";
 
         db.execSQL(sqlInsert);
         db.close();
@@ -51,8 +49,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         while( cursor.moveToNext( ) ) {
             Result currentResult
                     = new Result(cursor.getString(0),
-                    cursor.getString( 1 ),
-                    cursor.getString(2));
+                    cursor.getString( 1 ));
             resultList.add( currentResult );
         }
         db.close( );

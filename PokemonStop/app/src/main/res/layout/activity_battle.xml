@@ -35,29 +35,40 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/attack1"
         app:layout_constraintTop_toBottomOf="@+id/attack3"
-        app:layout_constraintVertical_bias="0.191" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/attack3"
         android:layout_width="86dp"
         android:layout_height="49dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="396dp"
         android:onClick="attackPressed3"
+        app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/attack4"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.1" />
 
     <Button
         android:id="@+id/attack4"
         android:layout_width="86dp"
         android:layout_height="49dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:onClick="attackPressed4"
         app:layout_constraintBottom_toTopOf="@+id/attack1"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/attack2"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/attack3"
+        app:layout_constraintVertical_bias="1.0"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="16dp" />
 
     <ProgressBar
         android:id="@+id/PLayerHP"
@@ -73,7 +84,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.406"
-        app:layout_constraintStart_toEndOf="@+id/attack"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.982" />
 

@@ -2,9 +2,11 @@ package com.example.fderenzi.pokemonstop;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -33,6 +35,9 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -64,6 +69,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private ArrayList<Node>closeNodeList;
     private Node closestNode;
+    private boolean isInGrass;
+    private static boolean isInBattle;
+
+    private Timer timer;
+    private TimerTask timerTask;
+
+    private Handler handler;
+    private Handler nodeHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +95,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         marker3.getAdjNode().add(marker1);
         marker3.getAdjNode().add(marker2);
+
+        isInGrass = false;
+        handler = new Handler();
+        nodeHandler = new Handler();
+        isInBattle = false;
 
         setContentView(R.layout.activity_maps);
 
@@ -174,12 +193,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                            updateCloseNode();
-                            if(mLastKnownLocation != null)
-                                if(isInRadiusOfNode())
-                                    System.out.print("Not implemented");
-                        }
-                        else {
+
+
+                        } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), DEFAULT_ZOOM));
@@ -194,6 +210,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
+    }
+
+    private void locationNodeUpdater() {
+        nodeHandler.postDelayed(new Runnable(){
+            public void run(){
+
+                if (mLastKnownLocation != null) {
+                    if (closestNode != null) {
+                        updateCloseNode();
+                        isInGrass = isInRadiusOfNode();
+                        if (isInGrass&&!isInBattle)
+                            startTimer();
+                    } else
+                        findCloseNode();
+                }
+                nodeHandler.postDelayed(this,5000);
+            }
+        },5000);
+    }
+
+    private void startTimer() {
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run () {
+                if(isInGrass && !isInBattle) {
+                    handler.postDelayed(this,5000); //runs second time as this time
+                    battleEventTriggered(handler,this);
+                }
+            };
+        }, 5000); //runs first time as 4 seconds
+
+
+    }
+
+    public void battleEventTriggered(Handler handleBattle,Runnable runBattle){
+        Random rand = new Random();
+        int n = rand.nextInt(2)+1;
+        if(n==1){
+            handleBattle.removeCallbacks(runBattle);
+            isInBattle = true;
+            Intent historyIntent = new Intent(getApplicationContext(), HistoryActivity.class);
+            startActivity(historyIntent);
+            this.onPause();
+        }
+        isInBattle = false;
     }
 
     @Override
@@ -243,15 +305,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 current=temp;
         }
         closestNode = current;
+        if(closestNode.calcDistance(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude())>0.006)
+            closestNode = null;
         markList = closestNode.getAdjNode();
     }
 
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
 
+        updateLocationUI();
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
         // Do other setup activities here too, as described elsewhere in this tutorial.
@@ -278,6 +341,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         mapAddMarker(map);
+        updateLocationUI();
+        if(mLastKnownLocation!=null)
+            findCloseNode();
+        locationNodeUpdater();
     }
 
 }

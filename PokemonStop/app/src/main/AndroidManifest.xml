@@ -17,6 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".HistoryActivity" />
+        <activity android:name=".BattleActivity" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
