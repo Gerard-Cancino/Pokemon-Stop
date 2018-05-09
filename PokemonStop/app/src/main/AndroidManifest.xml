@@ -25,7 +25,8 @@
             android:value="AIzaSyBlxsQNe4ZpQrfBHgupPkkWrZGlBdz4Elc" />
 
         <activity android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

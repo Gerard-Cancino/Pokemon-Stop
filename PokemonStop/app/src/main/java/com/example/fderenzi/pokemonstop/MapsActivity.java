@@ -62,9 +62,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mCameraPosition;
 
     private static final Node marker1 = new Node (40.799030, -73.575573);
-
     private static final Node marker2 = new Node (40.796685, -73.573142);
     private static final Node marker3 = new Node (40.799409, -73.574252);
+    private static final Node marker4 = new Node (40.721074, -73.729185);
+
     private ArrayList<Node>markList = new ArrayList<>();
 
     private ArrayList<Node>closeNodeList;
@@ -77,6 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Handler handler;
     private Handler nodeHandler;
+    private Handler locHandler;
 
 
     @Override
@@ -86,6 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markList.add(marker1);
         markList.add(marker2);
         markList.add(marker3);
+        markList.add(marker4);
 
         marker1.getAdjNode().add(marker2);
         marker1.getAdjNode().add(marker3);
@@ -99,6 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         isInGrass = false;
         handler = new Handler();
         nodeHandler = new Handler();
+        locHandler = new Handler();
         isInBattle = false;
 
         setContentView(R.layout.activity_maps);
@@ -176,6 +180,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void handLocation(){
+        locHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getDeviceLocation();
+                updateLocationUI();
+                if(mLastKnownLocation==null)
+                    locHandler.postDelayed(this,5000);
+            }
+        },5000);
+    }
+
     private void getDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -215,7 +231,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void locationNodeUpdater() {
         nodeHandler.postDelayed(new Runnable(){
             public void run(){
-
                 if (mLastKnownLocation != null) {
                     if (closestNode != null) {
                         updateCloseNode();
@@ -245,17 +260,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    protected void onStop(){
+        super.onStop();
+        isInBattle = true;
+    }
+
+    protected void onResume(){
+        super.onResume();
+        isInBattle = false;
+    }
+
+
     public void battleEventTriggered(Handler handleBattle,Runnable runBattle){
         Random rand = new Random();
         int n = rand.nextInt(2)+1;
         if(n==1){
             handleBattle.removeCallbacks(runBattle);
-            isInBattle = true;
-            Intent historyIntent = new Intent(getApplicationContext(), HistoryActivity.class);
-            startActivity(historyIntent);
-            this.onPause();
+            Intent battleIntent = new Intent(getApplicationContext(), BattleActivity.class);
+            startActivity(battleIntent);
         }
-        isInBattle = false;
     }
 
     @Override
@@ -274,6 +297,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         map.addMarker(new MarkerOptions().position(grass2));
         LatLng grass3 = new LatLng(marker3.getLatitude(), marker3.getLongitude());
         map.addMarker(new MarkerOptions().position(grass3));
+        LatLng grass4 = new LatLng(marker4.getLatitude(), marker4.getLongitude());
+        map.addMarker(new MarkerOptions().position(grass4));
+
     }
 
     private void findCloseNode (){
@@ -314,10 +340,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap map) {
         mMap = map;
 
-        updateLocationUI();
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
-        // Do other setup activities here too, as described elsewhere in this tutorial.
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             @Override
@@ -341,9 +363,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         mapAddMarker(map);
-        updateLocationUI();
-        if(mLastKnownLocation!=null)
-            findCloseNode();
+        handLocation();
         locationNodeUpdater();
     }
 
