@@ -13,11 +13,10 @@ public class Battle {
 
     }
 
-    public int play(int p){
-        int randomNumber = (int)(Math.random()*4)+1;
+    public int play(int p, int o){
         //Players turn
         PlayerdamageToOpponent(p);
-        OpponentdamageToPlayer(randomNumber);
+        OpponentdamageToPlayer(o);
         if(checkWin() == 1)
         {
             Reset();
@@ -48,16 +47,16 @@ public class Battle {
         opponent.setHealth(opponent.getHealth() - damageofability);
     }
 
-    public void OpponentdamageToPlayer(int p){
+    public void OpponentdamageToPlayer(int o){
         int damageofability = 0;
-        if(p == 1) {
-            damageofability = player.getAbility1().getDamage();
-        }else if(p == 2){
-            damageofability = player.getAbility2().getDamage();
-        }else if(p == 3) {
-            damageofability = player.getAbility3().getDamage();
-        }else if(p == 4){
-            damageofability = player.getAbility4().getDamage();
+        if(o == 1) {
+            damageofability = opponent.getAbility1().getDamage();
+        }else if(o == 2){
+            damageofability = opponent.getAbility2().getDamage();
+        }else if(o == 3) {
+            damageofability = opponent.getAbility3().getDamage();
+        }else if(o == 4){
+            damageofability = opponent.getAbility4().getDamage();
         }
         player.setHealth(player.getHealth()- damageofability);
     }
@@ -79,6 +78,18 @@ public class Battle {
     public void Reset(){
         player.setHealth(100);
         opponent.setHealth(100);
+    }
 
+    public String moveUsed(int o){
+        if(o == 1) {
+            return opponent.getAbility1().getAName();
+        }else if(o == 2){
+            return opponent.getAbility2().getAName();
+        }else if(o == 3) {
+            return opponent.getAbility3().getAName();
+        }else if(o == 4){
+            return opponent.getAbility4().getAName();
+        }
+        return"";
     }
 }

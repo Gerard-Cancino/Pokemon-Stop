@@ -1,8 +1,10 @@
 package com.example.fderenzi.pokemonstop;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,17 +33,46 @@ public class BattleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbManager = new DatabaseManager(this);
-        setContentView(R.layout.activity_battle);
 
-        ////////
         study = new Ability("study", 5, "Lowers pokemons defense");
         slash = new Ability("slash", 10, "pokemon slashes its opponent");
         tackle = new Ability("tackle", 15, "Lowers pokemons defense");
         pound = new Ability("pound", 20, "Lowers pokemons defense");
 
-        opponent = new Monster("Eevee", study, slash, tackle, pound);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String aName1 = extras.getString("a1Name");
+            int damage1 = extras.getInt("a1Damage");
+            String description1 = extras.getString("a1Desc");
+            Ability a1 = new Ability(aName1,damage1,description1);
+
+            String aName2 = extras.getString("a2Name");
+            int damage2 = extras.getInt("a2Damage");
+            String description2 = extras.getString("a2Desc");
+            Ability a2 = new Ability(aName2,damage2,description2);
+
+            String aName3 = extras.getString("a3Name");
+            int damage3 = extras.getInt("a3Damage");
+            String description3 = extras.getString("a3Desc");
+            Ability a3 = new Ability(aName3,damage3,description3);
+
+            String aName4 = extras.getString("a4Name");
+            int damage4 = extras.getInt("a4Damage");
+            String description4 = extras.getString("a4Desc");
+            Ability a4 = new Ability(aName4,damage4,description4);
+
+            String name = extras.getString("monName" );
+
+            opponent = new Monster(name,a1,a2,a3,a4);
+        }
+
+
+        dbManager = new DatabaseManager(this);
+        setContentView(R.layout.activity_battle);
+
+
         player = new Monster("Guten", study, slash, tackle, pound);
+
 
         fight = new Battle(player, opponent);
         TextView opponentName = (TextView)findViewById(R.id.OpponentName);
@@ -51,11 +82,12 @@ public class BattleActivity extends AppCompatActivity {
         Button attack2 = (Button)findViewById(R.id.attack2);
         Button attack3 = (Button)findViewById(R.id.attack3);
         Button attack4 = (Button)findViewById(R.id.attack4);
-        attack1.setText(player.getAbility1().getAName().toString());
-        attack2.setText(player.getAbility2().getAName().toString());
-        attack3.setText(player.getAbility3().getAName().toString());
-        attack4.setText(player.getAbility4().getAName().toString());
-
+        attack1.setText(player.getAbility1().getAName().toString() + "\n" + player.getAbility1().getDamage());
+        attack2.setText(player.getAbility2().getAName().toString() + "\n" + player.getAbility2().getDamage());
+        attack3.setText(player.getAbility3().getAName().toString() + "\n" + player.getAbility3().getDamage());
+        attack4.setText(player.getAbility4().getAName().toString() + "\n" + player.getAbility4().getDamage());
+        TextView opponentMoveUsed = (TextView)findViewById(R.id.opponentMoveUsed);
+        opponentMoveUsed.setText(opponent.getName() + " used");
 
         playersBar = findViewById(R.id.PLayerHP);
         opponentBar = findViewById(R.id.OpponentHP);
@@ -68,11 +100,16 @@ public class BattleActivity extends AppCompatActivity {
 
     public void attackPressed1(View v)
     {
+        final MediaPlayer winSound = MediaPlayer.create(this, R.raw.win );
+        final MediaPlayer lossSound = MediaPlayer.create(this, R.raw.loss );
         Button attack1 = (Button)findViewById(R.id.attack1);
         int yellow = getResources().getColor(R.color.yellow);
         int red = getResources().getColor(R.color.red);
         int move = 1;
-        int p = fight.play(move);
+        int randomNumber = (int)(Math.random()*4)+1;
+        int p = fight.play(move,randomNumber);
+        TextView opponentAttackName = (TextView)findViewById(R.id.opponentAttackName);
+        opponentAttackName.setText(fight.moveUsed(randomNumber));
         if(p == 1)
         {
             //PLAYER WIN
@@ -81,6 +118,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            winSound.start();
             this.finish();
 
         }
@@ -92,6 +130,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            lossSound.start();
             this.finish();
         }
         else
@@ -128,11 +167,16 @@ public class BattleActivity extends AppCompatActivity {
 
     public void attackPressed2(View v)
     {
+        final MediaPlayer winSound = MediaPlayer.create(this, R.raw.win );
+        final MediaPlayer lossSound = MediaPlayer.create(this, R.raw.loss );
         Button attack2 = (Button)findViewById(R.id.attack2);
         int yellow = getResources().getColor(R.color.yellow);
         int red = getResources().getColor(R.color.red);
         int move = 2;
-        int p = fight.play(move);
+        int randomNumber = (int)(Math.random()*4)+1;
+        int p = fight.play(move,randomNumber);
+        TextView opponentAttackName = (TextView)findViewById(R.id.opponentAttackName);
+        opponentAttackName.setText(fight.moveUsed(randomNumber));
         if(p == 1)
         {
             //PLAYER WIN
@@ -141,6 +185,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            winSound.start();
             this.finish();
 
         }
@@ -152,6 +197,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            lossSound.start();
             this.finish();
         }
         else
@@ -188,11 +234,16 @@ public class BattleActivity extends AppCompatActivity {
 
     public void attackPressed3(View v)
     {
+        final MediaPlayer winSound = MediaPlayer.create(this, R.raw.win );
+        final MediaPlayer lossSound = MediaPlayer.create(this, R.raw.loss );
         Button attack3 = (Button)findViewById(R.id.attack3);
         int yellow = getResources().getColor(R.color.yellow);
         int red = getResources().getColor(R.color.red);
         int move = 3;
-        int p = fight.play( move);
+        int randomNumber = (int)(Math.random()*4)+1;
+        int p = fight.play(move,randomNumber);
+        TextView opponentAttackName = (TextView)findViewById(R.id.opponentAttackName);
+        opponentAttackName.setText(fight.moveUsed(randomNumber));
         if(p == 1)
         {
             //PLAYER WIN
@@ -201,6 +252,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            winSound.start();
             this.finish();
 
         }
@@ -212,6 +264,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            lossSound.start();
             this.finish();
         }
         else
@@ -248,11 +301,17 @@ public class BattleActivity extends AppCompatActivity {
 
     public void attackPressed4(View v)
     {
+        final MediaPlayer winSound = MediaPlayer.create(this, R.raw.win );
+        final MediaPlayer lossSound = MediaPlayer.create(this, R.raw.loss );
+
         Button attack4 = (Button)findViewById(R.id.attack4);
         int yellow = getResources().getColor(R.color.yellow);
         int red = getResources().getColor(R.color.red);
         int move = 4;
-        int p = fight.play(move);
+        int randomNumber = (int)(Math.random()*4)+1;
+        int p = fight.play(move,randomNumber);
+        TextView opponentAttackName = (TextView)findViewById(R.id.opponentAttackName);
+        opponentAttackName.setText(fight.moveUsed(randomNumber));
         if(p == 1)
         {
             //PLAYER WIN
@@ -261,6 +320,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            winSound.start();
             this.finish();
 
         }
@@ -272,6 +332,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            lossSound.start();
             this.finish();
         }
         else

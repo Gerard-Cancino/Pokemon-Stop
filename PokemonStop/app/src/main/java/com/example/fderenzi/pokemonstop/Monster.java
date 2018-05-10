@@ -26,7 +26,6 @@ public class Monster
         ability2 = move2;
         ability3 = move3;
         ability4 = move4;
-
     }
     public int getHealth()
     {

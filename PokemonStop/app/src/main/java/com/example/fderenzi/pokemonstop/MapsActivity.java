@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -61,15 +63,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mCurrentLocation;
     private Location mCameraPosition;
 
-    private static final Node marker1 = new Node (40.799030, -73.575573);
-    private static final Node marker2 = new Node (40.796685, -73.573142);
-    private static final Node marker3 = new Node (40.799409, -73.574252);
-    private static final Node marker4 = new Node (40.721074, -73.729185);
-
-    private ArrayList<Node>markList = new ArrayList<>();
-
+    private ArrayList<Node>markList;
     private ArrayList<Node>closeNodeList;
     private Node closestNode;
+
+
     private boolean isInGrass;
     private static boolean isInBattle;
 
@@ -85,19 +83,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         closeNodeList = new ArrayList<> ();
-        markList.add(marker1);
-        markList.add(marker2);
-        markList.add(marker3);
-        markList.add(marker4);
-
-        marker1.getAdjNode().add(marker2);
-        marker1.getAdjNode().add(marker3);
-
-        marker2.getAdjNode().add(marker1);
-        marker2.getAdjNode().add(marker3);
-
-        marker3.getAdjNode().add(marker1);
-        marker3.getAdjNode().add(marker2);
 
         isInGrass = false;
         handler = new Handler();
@@ -127,6 +112,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
     }
+
+
 
     private void getLocationPermission() {
         /*
@@ -180,17 +167,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void handLocation(){
-        locHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getDeviceLocation();
-                updateLocationUI();
-                if(mLastKnownLocation==null)
-                    locHandler.postDelayed(this,5000);
-            }
-        },5000);
-    }
+
 
     private void getDeviceLocation() {
         /*
@@ -208,9 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mLastKnownLocation = (Location) task.getResult();
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-
-
+                                            mLastKnownLocation.getLongitude()), 18));
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -228,37 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void locationNodeUpdater() {
-        nodeHandler.postDelayed(new Runnable(){
-            public void run(){
-                if (mLastKnownLocation != null) {
-                    if (closestNode != null) {
-                        updateCloseNode();
-                        isInGrass = isInRadiusOfNode();
-                        if (isInGrass&&!isInBattle)
-                            startTimer();
-                    } else
-                        findCloseNode();
-                }
-                nodeHandler.postDelayed(this,5000);
-            }
-        },5000);
-    }
 
-    private void startTimer() {
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run () {
-                if(isInGrass && !isInBattle) {
-                    handler.postDelayed(this,5000); //runs second time as this time
-                    battleEventTriggered(handler,this);
-                }
-            };
-        }, 5000); //runs first time as 4 seconds
-
-
-    }
 
     protected void onStop(){
         super.onStop();
@@ -273,10 +218,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void battleEventTriggered(Handler handleBattle,Runnable runBattle){
         Random rand = new Random();
-        int n = rand.nextInt(2)+1;
+        int n = rand.nextInt(8)+1;
         if(n==1){
             handleBattle.removeCallbacks(runBattle);
+            Monster monAtNode = closestNode.randomMonsterSelect();
+            
+            Ability a1 = monAtNode.getAbility1();
+            String a1Name = a1.getAName();
+            int a1Damage = a1.getDamage();
+            String a1Desc= a1.getDescription();
+
+            Ability a2 = monAtNode.getAbility2();
+            String a2Name = a2.getAName();
+            int a2Damage = a2.getDamage();
+            String a2Desc= a2.getDescription();
+
+            Ability a3 = monAtNode.getAbility3();
+            String a3Name = a3.getAName();
+            int a3Damage = a3.getDamage();
+            String a3Desc= a3.getDescription();
+
+            Ability a4 = monAtNode.getAbility4();
+            String a4Name = a4.getAName();
+            int a4Damage = a4.getDamage();
+            String a4Desc= a4.getDescription();
+
+            String name = monAtNode.getName();
+            int health = monAtNode.getHealth();
+            
+            
             Intent battleIntent = new Intent(getApplicationContext(), BattleActivity.class);
+            battleIntent.putExtra("a1Name", a1Name );
+            battleIntent.putExtra("a1Damage", a1Damage );
+            battleIntent.putExtra("a1Desc", a1Desc );
+
+            battleIntent.putExtra("a2Name", a2Name );
+            battleIntent.putExtra("a2Damage", a2Damage );
+            battleIntent.putExtra("a2Desc", a2Desc );
+
+            battleIntent.putExtra("a3Name", a3Name );
+            battleIntent.putExtra("a3Damage", a3Damage );
+            battleIntent.putExtra("a3Desc", a3Desc );
+
+            battleIntent.putExtra("a4Name", a4Name );
+            battleIntent.putExtra("a4Damage", a4Damage );
+            battleIntent.putExtra("a4Desc", a4Desc );
+
+            battleIntent.putExtra("monName", name );
+            
             startActivity(battleIntent);
         }
     }
@@ -290,23 +279,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void mapAddMarker (GoogleMap map){
-        LatLng grass1 = new LatLng(marker1.getLatitude(), marker1.getLongitude());
-        map.addMarker(new MarkerOptions().position(grass1));
-        LatLng grass2 = new LatLng(marker2.getLatitude(), marker2.getLongitude());
-        map.addMarker(new MarkerOptions().position(grass2));
-        LatLng grass3 = new LatLng(marker3.getLatitude(), marker3.getLongitude());
-        map.addMarker(new MarkerOptions().position(grass3));
-        LatLng grass4 = new LatLng(marker4.getLatitude(), marker4.getLongitude());
-        map.addMarker(new MarkerOptions().position(grass4));
-
-    }
-
-    private void findCloseNode (){
+    private void findCloseNode() {
         Iterator<Node> itMark = markList.iterator();
-        while(itMark.hasNext()){
+        while (itMark.hasNext()) {
             Node pointer = itMark.next();
-            if(pointer.calcDistance(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude())<0.0006) {
+            if (pointer.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()) < 0.0006) {
                 closestNode = pointer;
                 markList = closestNode.getAdjNode();
             }
@@ -320,21 +297,70 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return false;
     }
 
-    private void updateCloseNode (){
+    private void updateCloseNode() {
         Node current = closestNode;
-        Iterator<Node>itArray = markList.iterator();
+        Iterator<Node> itArray = markList.iterator();
         while (itArray.hasNext()) {
-            double distance = current.calcDistance(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
+            double distance = current.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
             Node temp = itArray.next();
-            double tempDistance = temp.calcDistance(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
-            if(tempDistance<distance)
-                current=temp;
+            double tempDistance = temp.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+            if (tempDistance < distance)
+                current = temp;
         }
         closestNode = current;
-        if(closestNode.calcDistance(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude())>0.006)
+        if (closestNode.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()) > 0.006)
             closestNode = null;
         markList = closestNode.getAdjNode();
+
     }
+
+    private void locationNodeUpdater() {
+        nodeHandler.postDelayed(new Runnable(){
+            public void run(){
+                if (mLastKnownLocation != null) {
+                    if (closestNode != null) {
+                        updateCloseNode();
+                        isInGrass = isInRadiusOfNode();
+                        if (isInGrass&&!isInBattle)
+                            startTimer();
+                        nodeHandler.postDelayed(this,5000);
+                    } else {
+                        findCloseNode();
+                        nodeHandler.postDelayed(this,500);
+                    }
+                }
+            }
+        },5000);
+    }
+
+    private void handLocation(){
+        locHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getDeviceLocation();
+                updateLocationUI();
+                if(mLastKnownLocation==null)
+                    locHandler.postDelayed(this,100);
+            }
+        },100);
+    }
+
+    private void startTimer() {
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run () {
+                if(isInGrass && !isInBattle) {
+                    battleEventTriggered(handler,this);
+                    handler.postDelayed(this,5000); //runs second time as this time
+                }
+            };
+        }, 5000); //runs first time as 4 seconds
+
+
+    }
+
+
 
     @Override
     public void onMapReady(GoogleMap map) {
@@ -362,7 +388,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return infoWindow;
             }
         });
-        mapAddMarker(map);
+
+        NodeMon nm = new NodeMon(mMap);
+        markList = nm.getMarkList();
         handLocation();
         locationNodeUpdater();
     }
