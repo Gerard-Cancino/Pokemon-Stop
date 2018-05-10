@@ -66,6 +66,8 @@ public class BattleActivity extends AppCompatActivity {
             opponent = new Monster(name,a1,a2,a3,a4);
         }
 
+        if(opponent==null)
+            opponent = new Monster("Eevee", study, slash, tackle, pound);
 
         dbManager = new DatabaseManager(this);
         setContentView(R.layout.activity_battle);
