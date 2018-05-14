@@ -1,17 +1,21 @@
 package com.example.fderenzi.pokemonstop;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+
 
 public class BattleActivity extends AppCompatActivity {
     private DatabaseManager dbManager;
@@ -24,15 +28,20 @@ public class BattleActivity extends AppCompatActivity {
     private Battle fight;
     private ProgressBar opponentBar;
     private ProgressBar playersBar;
-    private int counter1 = 15;
-    private int counter2 = 15;
-    private int counter3 = 10;
+    private int counter1 = 5;
+    private int counter2 = 5;
+    private int counter3 = 5;
     private int counter4 = 5;
+    private MediaPlayer battleMusic;
+    private MediaPlayer cry;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        battleMusic = MediaPlayer.create(this, R.raw.battle);
+        battleMusic.start();
 
         study = new Ability("study", 5, "Lowers pokemons defense");
         slash = new Ability("slash", 10, "pokemon slashes its opponent");
@@ -67,10 +76,26 @@ public class BattleActivity extends AppCompatActivity {
         }
 
         if(opponent==null)
-            opponent = new Monster("Eevee", study, slash, tackle, pound);
+            opponent = new Monster("Meowth", study, slash, tackle, pound);
+
 
         dbManager = new DatabaseManager(this);
         setContentView(R.layout.activity_battle);
+
+        ImageView gifImageView = (ImageView)findViewById(R.id.gif);
+        String gifName = opponent.getName().toLowerCase();
+        gifImageView.setImageResource(getResources().getIdentifier(gifName, "drawable", getPackageName()));
+
+        String cryName = opponent.getName().toLowerCase();
+        int cryID = getResources().getIdentifier(cryName, "raw", getPackageName());
+        cry = MediaPlayer.create(this, cryID);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cry.start();
+            }
+        }, 1000);
+
 
 
         player = new Monster("Guten", study, slash, tackle, pound);
@@ -120,6 +145,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            battleMusic.stop();
             winSound.start();
             this.finish();
 
@@ -132,6 +158,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            battleMusic.stop();
             lossSound.start();
             this.finish();
         }
@@ -187,6 +214,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            battleMusic.stop();
             winSound.start();
             this.finish();
 
@@ -199,6 +227,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            battleMusic.stop();
             lossSound.start();
             this.finish();
         }
@@ -254,6 +283,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            battleMusic.stop();
             winSound.start();
             this.finish();
 
@@ -266,6 +296,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            battleMusic.stop();
             lossSound.start();
             this.finish();
         }
@@ -322,6 +353,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            battleMusic.stop();
             winSound.start();
             this.finish();
 
@@ -334,6 +366,7 @@ public class BattleActivity extends AppCompatActivity {
             }catch(NumberFormatException nfe){
                 Toast.makeText(this, "ERROR", Toast.LENGTH_LONG).show();
             }
+            battleMusic.stop();
             lossSound.start();
             this.finish();
         }
@@ -370,9 +403,9 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     public void resetCounters(){
-        counter1 = 15;
-        counter2 = 15;
-        counter3 = 10;
+        counter1 = 5;
+        counter2 = 5;
+        counter3 = 5;
         counter4 = 5;
         Button attack1 = (Button)findViewById(R.id.attack1);
         Button attack2 = (Button)findViewById(R.id.attack2);
