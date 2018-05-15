@@ -17,7 +17,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".HistoryActivity" />
-        <activity android:name=".BattleActivity" />
 
 
         <meta-data
@@ -26,6 +25,9 @@
 
         <activity android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".BattleActivity"
             android:screenOrientation="portrait">
         </activity>
     </application>

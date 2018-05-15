@@ -1,5 +1,6 @@
 package com.example.fderenzi.pokemonstop;
 
+//Object Ability
 public class Ability {
     private String aName;
     private int damage;

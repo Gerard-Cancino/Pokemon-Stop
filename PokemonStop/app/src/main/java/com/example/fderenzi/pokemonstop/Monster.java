@@ -1,5 +1,6 @@
 package com.example.fderenzi.pokemonstop;
 
+// Object
 public class Monster
 {
     private String name;

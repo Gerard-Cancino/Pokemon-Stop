@@ -1,7 +1,7 @@
 package com.example.fderenzi.pokemonstop;
 
 
-
+// Object Result
 public class Result {
     private String opponentName;
     private String result;

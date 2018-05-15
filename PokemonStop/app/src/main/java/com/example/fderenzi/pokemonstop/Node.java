@@ -4,6 +4,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Random;
 
+// Acts as the wilderness in Pokemon
+// If close to node, it will go into battle
+// Calculates the distance between current player and node.
 public class Node {
     public double latitude;
     public double longitude;

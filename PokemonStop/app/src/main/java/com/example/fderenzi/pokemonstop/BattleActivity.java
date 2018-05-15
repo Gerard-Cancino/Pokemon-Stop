@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-
+// View for battle
 public class BattleActivity extends AppCompatActivity {
     private DatabaseManager dbManager;
     private Ability slash;
@@ -76,7 +76,7 @@ public class BattleActivity extends AppCompatActivity {
         }
 
         if(opponent==null)
-            opponent = new Monster("Meowth", study, slash, tackle, pound);
+            opponent = new Monster("Flygon", study, slash, tackle, pound);
 
 
         dbManager = new DatabaseManager(this);

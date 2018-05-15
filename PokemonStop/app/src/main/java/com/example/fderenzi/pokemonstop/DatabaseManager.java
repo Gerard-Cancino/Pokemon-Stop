@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-
+// Database
+// Keeps the history of all battles
 public class DatabaseManager extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "battleHistoryDB";
     private static final int DATABASE_VERSION = 1;

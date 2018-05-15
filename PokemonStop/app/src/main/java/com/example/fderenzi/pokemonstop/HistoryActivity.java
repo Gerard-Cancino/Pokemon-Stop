@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+//Where to display the database
 public class HistoryActivity extends AppCompatActivity {
     private DatabaseManager dbManager;
 

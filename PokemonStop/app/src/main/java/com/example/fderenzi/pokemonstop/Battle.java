@@ -2,6 +2,7 @@ package com.example.fderenzi.pokemonstop;
 
 import java.util.Random;
 
+//Acts as a controller for the battle activity
 public class Battle {
 
     private Monster player;

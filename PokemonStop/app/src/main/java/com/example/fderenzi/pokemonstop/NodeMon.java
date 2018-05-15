@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-
+// Combines Node and monster
+// Acts as a startup for maps to create and add the nodes
 public class NodeMon {
 
     private final Node marker1 = new Node(40.799030, -73.575573);

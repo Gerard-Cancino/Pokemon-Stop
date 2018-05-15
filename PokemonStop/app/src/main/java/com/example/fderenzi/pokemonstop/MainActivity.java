@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+//Main screen
 public class MainActivity extends AppCompatActivity {
 
     private Button map;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(historyIntent);
             }
         });
+        /* Debug
         battle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(battleIntent);
             }
         });
+        */
     }
 
 
