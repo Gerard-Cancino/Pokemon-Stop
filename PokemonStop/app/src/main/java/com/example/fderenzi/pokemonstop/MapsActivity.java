@@ -245,7 +245,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Iterator<Node> itMark = markList.iterator();
         while (itMark.hasNext()) {
             Node pointer = itMark.next();
-            if (pointer.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()) < 0.0006) {
+            if (pointer.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()) < 0.006) {
                 closestNode = pointer;
                 closeNodeList = closestNode.getAdjNode();
             }
@@ -254,7 +254,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Boolean to check if node is in a radius (a2 + b2 = c2, where c is the distance)
     private boolean isInRadiusOfNode() {
-        if (closestNode.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()) < 0.004)
+        if (closestNode.calcDistance(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()) < 0.001)
             return true;
         else
             return false;

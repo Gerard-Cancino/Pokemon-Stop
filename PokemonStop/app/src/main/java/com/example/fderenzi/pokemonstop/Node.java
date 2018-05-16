@@ -23,7 +23,7 @@ public class Node {
 
 
     public double calcDistance(double curLat, double curLong){
-        double distance = Math.pow((curLat-latitude),2) + Math.pow((curLong-longitude),2);
+        double distance = sqrt(Math.pow((curLat-latitude),2) + Math.pow((curLong-longitude),2));
         return distance;
     }
     public Monster randomMonsterSelect(){
